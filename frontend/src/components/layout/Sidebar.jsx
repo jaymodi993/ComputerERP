@@ -1,25 +1,35 @@
+import Link from "next/link";
+
 export default function Sidebar() {
   return (
-    <div className="w-64 min-h-screen bg-gray-900 text-white p-5">
-      <h1 className="text-2xl font-bold mb-8">Computer ERP</h1>
+    <div className="w-72 min-h-screen bg-slate-950 text-white p-6">
+      <h1 className="text-3xl font-bold mb-10">⚡ Computer ERP</h1>
 
-      <ul className="space-y-4">
-        <li>Dashboard</li>
+      <div className="space-y-3">
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/">
+          Dashboard
+        </Link>
 
-        <li>Customers</li>
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/customers">
+          Customers
+        </Link>
 
-        <li>Repair Jobs</li>
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/repair-list">
+          Repair Jobs
+        </Link>
 
-        <li>Invoices</li>
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/invoices">
+          Invoices
+        </Link>
 
-        <li>Products</li>
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/products">
+          Products
+        </Link>
 
-        <li>Stock</li>
-
-        <li>Reports</li>
-
-        <li>Settings</li>
-      </ul>
+        <Link className="block p-3 rounded-xl hover:bg-slate-800" href="/stock">
+          Stock
+        </Link>
+      </div>
     </div>
   );
 }
