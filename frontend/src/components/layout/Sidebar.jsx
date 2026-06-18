@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="w-72 min-h-screen bg-slate-950 text-white p-6">
+    <div className="w-72 min-h-screen bg-[#0F172A] text-white p-6">
       <h1 className="text-3xl font-bold mb-10">⚡ Computer ERP</h1>
 
       <div className="space-y-3">

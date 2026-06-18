@@ -1,6 +1,6 @@
 export default function DashboardCard({ title, value }) {
   return (
-    <div className="bg-white shadow rounded-xl p-6">
+    <div className="bg-white shadow-lg rounded-xl p-6 border border-slate-200 hover:shadow-xl transition">
       <h3 className="text-gray-500 text-sm">{title}</h3>
 
       <h1 className="text-3xl font-bold mt-3">{value}</h1>
