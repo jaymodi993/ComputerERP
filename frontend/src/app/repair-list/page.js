@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import api from "@/services/api";
 
 export default function RepairList() {
   const [jobs, setJobs] = useState([]);
 
-  const loadJobs = async () => {
+  const [search, setSearch] = useState("");
+
+  const loadJobs = useCallback(async () => {
     try {
       const res = await api.get("/repair");
 
@@ -15,77 +17,87 @@ export default function RepairList() {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  useEffect(() => {
-    loadJobs();
   }, []);
 
-  const updateStatus = async (jobID, status) => {
-    try {
-      await api.put(`/status/${jobID}`, {
-        Status: status,
-      });
+  useEffect(() => {
+    const fetchJobs = async () => {
+      await loadJobs();
+    };
 
-      loadJobs();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    fetchJobs();
+  }, [loadJobs]);
+
+  const filtered = jobs.filter(
+    (job) =>
+      job.JobNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      job.Name?.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Repair Jobs</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Repair Jobs</h1>
 
-      <div className="bg-white shadow rounded-xl p-5">
+          <p className="text-gray-500">Manage customer repair orders</p>
+        </div>
+      </div>
+
+      <div className="card p-6">
+        <input
+          className="input mb-6"
+          placeholder="Search job or customer..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
         <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="p-3 text-left">Job No</th>
+          <thead className="table-head">
+            <tr>
+              <th className="p-4 text-left">Job No</th>
 
-              <th className="p-3 text-left">Customer</th>
+              <th className="p-4 text-left">Customer</th>
 
-              <th className="p-3 text-left">Device</th>
+              <th className="p-4 text-left">Device</th>
 
-              <th className="p-3 text-left">Status</th>
+              <th className="p-4 text-left">Status</th>
+
+              <th className="p-4 text-left">Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {jobs.map((job) => (
-              <tr key={job.JobID} className="border-b">
-                <td className="p-3">{job.JobNumber}</td>
+            {filtered.map((job) => (
+              <tr key={job.JobID} className="border-b hover:bg-slate-50">
+                <td className="p-4 font-semibold">{job.JobNumber}</td>
 
-                <td className="p-3">{job.Name}</td>
+                <td className="p-4">
+                  <div>
+                    <p className="font-medium">{job.Name}</p>
 
-                <td className="p-3">
+                    <p className="text-sm text-gray-500">{job.Mobile}</p>
+                  </div>
+                </td>
+
+                <td className="p-4">
                   {job.Brand} {job.Model}
                 </td>
 
-                <td className="p-3">
-                  <select
-                    className="border rounded p-2"
-                    value={job.Status || "Received"}
-                    onChange={(e) =>
-                      updateStatus(
-                        job.JobID,
+                <td className="p-4">
+                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm">
+                    {job.Status}
+                  </span>
+                </td>
 
-                        e.target.value,
-                      )
+                <td className="p-4">
+                  <button
+                    onClick={() =>
+                      (window.location.href = `/repair-details?id=${job.JobID}`)
                     }
+                    className="text-blue-600 font-medium"
                   >
-                    <option>Received</option>
-
-                    <option>Checking</option>
-
-                    <option>Waiting Approval</option>
-
-                    <option>Repairing</option>
-
-                    <option>Ready</option>
-
-                    <option>Delivered</option>
-                  </select>
+                    View
+                  </button>
                 </td>
               </tr>
             ))}

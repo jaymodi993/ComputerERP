@@ -2,20 +2,47 @@
 
 import { useEffect, useState } from "react";
 
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
-import DashboardCard from "@/components/DashboardCard";
-
 import api from "@/services/api";
+
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+import DashboardCard from "@/components/DashboardCard";
 
 export default function Home() {
   const [data, setData] = useState({
     customers: 0,
-
     jobs: 0,
-
     invoices: 0,
   });
+
+  const [jobs, setJobs] = useState([]);
+
+  const chartData = [
+    {
+      name: "Jan",
+      jobs: 20,
+    },
+
+    {
+      name: "Feb",
+      jobs: 35,
+    },
+
+    {
+      name: "Mar",
+      jobs: 25,
+    },
+
+    {
+      name: "Apr",
+      jobs: 45,
+    },
+
+    {
+      name: "May",
+      jobs: 60,
+    },
+  ];
 
   useEffect(() => {
     api
@@ -23,33 +50,106 @@ export default function Home() {
 
       .then((res) => {
         setData(res.data);
-      })
+      });
 
-      .catch((err) => {
-        console.log(err);
+    api
+      .get("/repair")
+
+      .then((res) => {
+        setJobs(res.data.slice(0, 5));
       });
   }, []);
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
 
-      <div className="flex-1">
-        <Header />
+        <p className="text-gray-500">Computer Repair ERP Overview</p>
+      </div>
 
-        <div className="p-6">
-          <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      {/* Cards */}
 
-          <div className="grid grid-cols-4 gap-6">
-            <DashboardCard title="Customers" value={data.customers} />
+      <div className="grid grid-cols-4 gap-6">
+        <DashboardCard title="Customers" value={data.customers} icon="👥" />
 
-            <DashboardCard title="Repair Jobs" value={data.jobs} />
+        <DashboardCard title="Repair Jobs" value={data.jobs} icon="💻" />
 
-            <DashboardCard title="Pending Repair" value="0" />
+        <DashboardCard title="Invoices" value={data.invoices} icon="🧾" />
 
-            <DashboardCard title="Invoices" value={data.invoices} />
+        <DashboardCard title="Revenue" value="₹0" icon="💰" />
+      </div>
+
+      <div className="grid grid-cols-3 gap-6">
+        {/* Chart */}
+
+        <div className="col-span-2 bg-white rounded-xl border p-6">
+          <h2 className="font-bold text-xl mb-5">Repair Overview</h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <XAxis dataKey="name" />
+
+              <YAxis />
+
+              <Tooltip />
+
+              <Line type="monotone" dataKey="jobs" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Quick Action */}
+
+        <div className="bg-white rounded-xl border p-6">
+          <h2 className="font-bold text-xl mb-5">Quick Actions</h2>
+
+          <div className="space-y-4">
+            <button className="w-full bg-blue-600 text-white p-3 rounded-lg">
+              + New Repair Job
+            </button>
+
+            <button className="w-full border p-3 rounded-lg">+ Add Customer</button>
+
+            <button className="w-full border p-3 rounded-lg">Create Invoice</button>
           </div>
         </div>
+      </div>
+
+      {/* Recent Jobs */}
+
+      <div className="bg-white rounded-xl border p-6">
+        <h2 className="font-bold text-xl mb-5">Recent Repair Jobs</h2>
+
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="p-3 text-left">Job</th>
+
+              <th className="p-3 text-left">Customer</th>
+
+              <th className="p-3 text-left">Device</th>
+
+              <th className="p-3 text-left">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {jobs.map((job) => (
+              <tr key={job.JobID} className="border-b">
+                <td className="p-3">{job.JobNumber}</td>
+
+                <td className="p-3">{job.Name}</td>
+
+                <td className="p-3">
+                  {job.Brand} {job.Model}
+                </td>
+
+                <td className="p-3">{job.Status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

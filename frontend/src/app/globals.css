@@ -1,23 +1,41 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-
-:root {
-
-  --background: #020617;
-  --sidebar: #0F172A;
-  --primary: #2563EB;
-  --text: #E2E8F0;
-  --muted: #94A3B8;
-
+/* Tailwind v4 માટે થીમ કન્ફિગરેશન */
+@theme {
+  --color-bg: #f5f7fb;
+  --color-card-custom: #ffffff;
+  --color-primary-custom: #2563eb;
+  --color-text-custom: #0f172a;
+  --color-muted-custom: #64748b;
 }
 
+/* :root વેરિયેબલ્સ નોર્મલ CSS માટે */
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --text: #0f172a;
+  --muted: #64748b;
+}
 
 body {
-
-  background: var(--background);
+  background: var(--bg);
   color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+}
 
+/* @utility ડાયરેક્ટિવ વાપરવાથી Tailwind v4 માં @apply ની એરર નહીં આવે */
+@utility card {
+  @apply bg-white border border-solid rounded-xl shadow-xs;
+}
+
+@utility btn-primary {
+  @apply bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition;
+}
+
+@utility input {
+  @apply w-full border border-slate-200 border-solid rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+@utility table-head {
+  @apply bg-slate-50 text-slate-600 text-sm;
 }
